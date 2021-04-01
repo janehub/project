@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.next.kko.excel">
+
+	<insert id="insertExcelPass" parameterType="Pass_Dto">
+		INSERT INTO PASS
+		(PASSCODE, ID, STARTPASS, ENDPASS, INCOUNT, INDUM, INTYPE, INBUHWA, INACTIVITY, DONGCHICKNUM, DELFLAG)
+		VALUES(#{id}||#{startpass}, #{id}, #{startpass}, #{endpass}, #{incount},#{indum}, #{intype},#{inbuhwa} ,#{inactivity}, #{dongchicknum}, 'N' )
+	</insert>
+	
+	<insert id="codeset" parameterType="java.util.Map">
+		INSERT INTO CODESET
+		(PASSCODE, ILLYUNG, DELFLAG)
+		VALUES(#{passcode}, #{illyung}, 'N' )
+	</insert>
+	
+	<insert id="insertExcelIlji" parameterType="RecordIlji_Dto">
+		INSERT INTO RECORDILJI
+		(RECORDILJI_SEQ, PASSCODE, ILLYUNG, HIGHTEMP, LOWTEMP, RECORDDATE, RECORDTIME, MEDICINE, WEATHERCON, ETC, DEATHCOUNT, WEIGHT, BUILDTEMP, DISTINCTDONG, DELFLAG)
+		VALUES('ILJI'||ILJI_SEQ.NEXTVAL, #{passcode}, #{illyung}, #{hightemp}, #{lowtemp}, #{recorddate}, #{recordtime}, #{medicine}, #{weathercon}, #{etc}, #{deathcount}, #{weight}, #{buildtemp}, #{distinctdong},'N')
+	</insert>
+
+<!-- 파스시작일	  파스종료일	  입추수수	동별 수수 (/로 구분)	덤 수	품종	부화장	활발도	 -->
+	<select id="getExcelPass" parameterType="java.lang.String" resultType="Pass_Dto">
+		SELECT TO_CHAR(STARTPASS,'YYYYMMDD') AS STARTPASS, TO_CHAR(ENDPASS,'YYYYMMDD') AS ENDPASS, INCOUNT,DONGCHICKNUM, INDUM, INTYPE, INBUHWA, INACTIVITY
+		FROM PASS WHERE PASSCODE=#{passcode} AND DELFLAG='N'
+	</select>
+
+<!-- 날짜	일령	동별구분	폐사수	사육장온도	중량	약품	날씨상태	비고		 -->	
+	<select id="getExcelIlji" parameterType="java.lang.String" resultType="RecordIlji_Dto">
+		SELECT TO_CHAR(RECORDDATE,'YYYYMMDD') AS RECORDDATE, ILLYUNG,DISTINCTDONG,DEATHCOUNT,BUILDTEMP,WEIGHT, MEDICINE, WEATHERCON, ETC
+		FROM RECORDILJI WHERE PASSCODE=#{passcode} AND DELFLAG='N' ORDER BY RECORDILJI_SEQ
+	</select>
+	
+</mapper>

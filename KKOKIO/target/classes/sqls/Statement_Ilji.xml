@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.next.kko.ilji">
+
+<!-- 파스 중복 체크 -->
+<select id="checkPassDuplicate" parameterType="java.lang.String" resultType="java.lang.Integer">
+SELECT COUNT(*) FROM PASS WHERE PASSCODE=#{passcode}
+</select>
+<!-- 파스 생성 -->
+<insert id="makePass" parameterType="Pass_Dto">
+INSERT INTO PASS
+(PASSCODE, ID, STARTPASS, ENDPASS, INCOUNT, INDUM, INTYPE, INBUHWA, INACTIVITY, DONGCHICKNUM, DELFLAG)
+VALUES(#{id}||#{startpass}, #{id}, #{startpass}, #{endpass}, #{incount},#{indum}, #{intype},#{inbuhwa} ,#{inactivity}, #{dongchicknum}, 'N' )
+</insert>
+
+<!-- 코드셋 생성 -->
+<insert id="codeset" parameterType="java.util.Map">
+INSERT INTO CODESET
+(PASSCODE, ILLYUNG, DELFLAG)
+VALUES(#{passcode}, #{illyung}, 'N' )
+</insert>
+
+<!-- 파스 정보 수정 -->
+<update id="modifyPass" parameterType="Pass_Dto">
+UPDATE PASS SET STARTPASS = #{startpass}, ENDPASS = #{endpass}, INCOUNT = #{incount}, 
+INDUM = #{indum}, INTYPE = #{intype}, INBUHWA = #{inbuhwa}, INACTIVITY = #{inactivity} 
+WHERE PASSCODE = #{passcode} AND ID = #{id}
+</update>
+
+<!-- 코드셋의 최대 일령 -->
+<select id="getMaxCodset" parameterType="java.lang.String" resultType="java.lang.Integer">
+SELECT MAX(ILLYUNG) FROM CODESET  WHERE PASSCODE=#{passcode}
+</select>
+
+<!-- 파스정보 상세조회 -->
+<select id="infoDetailPass" parameterType="java.util.Map"  resultType="Pass_Dto">
+SELECT PASSCODE, STARTPASS, ENDPASS, INCOUNT, INDUM, INTYPE, INBUHWA, INACTIVITY, DONGCHICKNUM FROM PASS
+WHERE PASSCODE = #{passcode} AND ID = #{id} AND DELFLAG='N'
+</select>
+
+<!-- 파스정보 전체조회 -->
+<select id="infoPassList" parameterType="java.lang.String" resultType="Pass_Dto">
+SELECT PASSCODE, STARTPASS, ENDPASS, INCOUNT, INDUM, INTYPE, INBUHWA, INACTIVITY, DONGCHICKNUM FROM PASS
+WHERE ID = #{id} AND DELFLAG='N'
+ORDER BY STARTPASS DESC
+</select>
+
+<!-- 파스 삭제 -->
+<update id="deletePass" parameterType="java.util.Map">
+UPDATE PASS SET DELFLAG = 'Y'
+WHERE PASSCODE = #{passcode} AND ID = #{id}
+</update>
+
+<!-- 코드셋 삭제 -->
+<update id="deleteCodeset" parameterType="java.lang.String">
+UPDATE CODESET SET DELFLAG='Y'
+WHERE PASSCODE=#{passcode}
+</update>
+
+<!-- 일지 삭제 -->
+<update id="deleteIlji" parameterType="java.lang.String">
+UPDATE RECORDILJI SET DELFLAG='Y'
+WHERE PASSCODE=#{passcode}
+</update>
+
+<!-- 메인화면에서의 동별 폐사수, 중량 조회-->
+<select id="infoMainIlji" parameterType="java.util.Map" resultType="RecordIlji_Dto">
+SELECT ${dongnumber} AS DISTINCTDONG, SUM(DEATHCOUNT) AS DEATHCOUNT,SUM(WEIGHT) AS WEIGHT
+FROM (SELECT SUM(DEATHCOUNT) AS DEATHCOUNT,0 AS WEIGHT
+		FROM RECORDILJI
+		WHERE PASSCODE=#{passcode} AND DELFLAG='N'
+			AND DISTINCTDONG LIKE '%'||#{dongnumber}||'%'
+UNION
+SELECT 0 AS DEATHCOUNT,AVG(WEIGHT) AS WEIGHT
+	FROM RECORDILJI
+	WHERE PASSCODE=#{passcode} AND DELFLAG='N'
+		AND WEIGHT>0 AND DISTINCTDONG LIKE '%'||#{dongnumber}||'%')
+</select>
+
+
+<!-- 동별 일령별 폐사수 조회 -->
+<select id="distinctDeath" resultType="RecordIlji_Dto">
+SELECT PASSCODE, ILLYUNG, TO_CHAR(RECORDDATE,'YYYY-MM-DD'), DEATHCOUNT, DISTINCTDONG
+FROM RECORDILJI
+WHERE DEATHCOUNT IS NOT NULL
+AND REGEXP_LIKE(DISTINCTDONG, '[1-9]')
+ORDER BY ILLYUNG, DISTINCTDONG ASC;
+</select>
+
+
+
+<!-- 기본정보 출력 -->
+<select id="baseInfoPass" parameterType="java.util.Map" resultType="Pass_Dto">
+SELECT TO_CHAR(STARTPASS,'YYYY-MM-DD'), TO_CHAR(ENDPASS,'YYYY-MM-DD'),INCOUNT,INDUM,INTYPE,INBUHWA,
+INACTIVITY,DONGCHICKNUM 
+FROM PASS
+WHERE PASSCODE=#{passcode} AND ID=#{id}
+</select>
+
+<!-- 농장 전체 동의 온도 조회 -->
+<select id="infoFarmTemp" resultType="Pass_Dto">	
+SELECT B.PASSCODE, B.ILLYUNG, A.D1, A.D2, B.BUILDTEMP
+FROM DISTINCTDONG A JOIN RECORDILJI B 
+ON (A.RECORDILJI_SEQ=B.RECORDILJI_SEQ)
+WHERE B.BUILDTEMP IS NOT NULL
+ORDER BY B.PASSCODE, B.ILLYUNG
+</select>
+
+<!-- 동 별 온도 조회 -->
+<select id="distinctTemp" parameterType="RecordIlji_Dto" resultType="RecordIlji_Dto">
+SELECT PASSCODE,ILLYUNG,BUILDTEMP,DISTINCTDONG FROM RECORDILJI
+WHERE BUILDTEMP IS NOT NULL AND REGEXP_LIKE(DISTINCTDONG,'[1-9]')
+AND DISTINCTDONG like '%'||#{distinctdong}||'%'
+</select>
+
+<!-- 동별 온도 입력 -->
+<insert id="insertTemp" parameterType="RecordIlji_Dto">
+INSERT INTO RECORDILJI (RECORDILJI_SEQ, PASSCODE, ILLYUNG, HIGHTEMP, LOWTEMP, RECORDDATE, RECORDTIME, BUILDTEMP, DISTINCTDONG, DELFLAG) 
+VALUES('ILJI'||ILJI_SEQ.NEXTVAL,#{passcode},#{illyung},#{hightemp},#{lowtemp},SYSDATE,SYSDATE,#{buildtemp},#{distinctdong},'N')
+</insert>
+<!-- 동별 온도 수정 -->
+<update id="modifyTemp" parameterType="RecordIlji_Dto">
+UPDATE RECORDILJI SET RECORDDATE=SYSDATE,RECORDTIME=SYSDATE,BUILDTEMP=#{buildtemp}
+WHERE RECORDILJI_SEQ=#{recordilji_seq} AND PASSCODE=#{passcode}
+</update>
+<!-- 동별 온도 삭제 -->	
+<update id="deleteTemp" parameterType="java.util.Map">
+UPDATE RECORDILJI SET DELFLAG='Y'
+WHERE RECORDILJI_SEQ=#{recordilji_seq} AND PASSCODE=#{passcode}
+</update>
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 시간별로 비고란 조회 -->
+<select id="infoCommentAtTheTime" parameterType="java.lang.String" resultType="RecordIlji_Dto">
+SELECT RECORDILJI_SEQ, PASSCODE, ILLYUNG, HIGHTEMP, LOWTEMP, RECORDDATE, RECORDTIME, ETC 
+FROM RECORDILJI WHERE PASSCODE=#{passcode} AND ETC IS NOT NULL 
+ORDER BY ILLYUNG, RECORDTIME, RECORDILJI_SEQ ASC
+</select>
+
+<!-- 시간별 비고 수정 -->
+<update id="modifyCommentAtTheTime" parameterType="RecordIlji_Dto">
+UPDATE RECORDILJI SET RECORDDATE=SYSDATE,RECORDTIME=SYSDATE,ETC = #{etc}
+WHERE RECORDILJI_SEQ =#{recordilji_seq} AND PASSCODE=#{passcode}
+</update>
+
+<!-- 약품 입력 -->
+<insert id="insertMedi" parameterType="RecordIlji_Dto">
+INSERT INTO RECORDILJI(RECORDILJI_SEQ,PASSCODE,ILLYUNG,HIGHTEMP,LOWTEMP,RECORDDATE,RECORDTIME,MEDICINE,DISTINCTDONG,DELFLAG)
+VALUES('ILJI'||ILJI_SEQ.NEXTVAL,#{passcode},#{illyung},#{hightemp},#{lowtemp},SYSDATE,SYSDATE,#{medicine},#{distinctdong},'N')
+</insert>
+
+<!-- 약품 수정 -->
+<update id="modifyMedi" parameterType="RecordIlji_Dto">
+UPDATE RECORDILJI SET RECORDDATE=SYSDATE,RECORDTIME=SYSDATE,MEDICINE=#{medicine}
+WHERE RECORDILJI_SEQ=#{recordilji_seq} AND PASSCODE=#{passcode}
+</update>
+
+<!-- 약품 삭제 -->
+<update id="deleteMedi" parameterType="java.util.Map">
+UPDATE RECORDILJI SET DELFLAG='Y'
+WHERE RECORDILJI_SEQ=#{recordilji_seq} AND PASSCODE=#{passcode}
+</update>
+
+
+	<!-- 일지입력: 동별 폐사수 입력 -->
+	<insert id="dongDeathCntInput" parameterType="RecordIlji_Dto">
+		INSERT INTO RECORDILJI (RECORDILJI_SEQ, PASSCODE, ILLYUNG, HIGHTEMP, LOWTEMP, RECORDDATE, RECORDTIME, DEATHCOUNT,
+		DISTINCTDONG, DELFLAG)
+		VALUES('ILJI'||ILJI_SEQ.NEXTVAL,
+		#{passcode}, #{illyung}, #{hightemp}, #{lowtemp}, SYSDATE, SYSDATE, #{deathcount}, #{distinctdong}, 'N' )
+	</insert>
+	
+	<!-- 일지입력: 동별 폐사수 수정 -->
+	<update id="dongDeathCntModify" parameterType="RecordIlji_Dto">
+		UPDATE RECORDILJI SET RECORDDATE=SYSDATE, RECORDTIME=SYSDATE, DEATHCOUNT=#{deathcount}
+		WHERE RECORDILJI_SEQ=#{recordilji_seq} AND PASSCODE=#{passcode} AND ILLYUNG=#{illyung} AND DISTINCTDONG=#{distinctdong}
+	</update>
+	
+	<!-- 일지입력: 동별 폐사수 삭제 -->
+	<update id="dongDeathCntDel" parameterType="RecordIlji_Dto">
+		UPDATE RECORDILJI SET DELFLAG='Y'
+		WHERE RECORDILJI_SEQ=#{recordilji_seq} AND PASSCODE=#{passcode} AND ILLYUNG=#{illyung} AND DISTINCTDONG=#{distinctdong}
+	</update>
+	
+	<!-- 일지입력: 일령별 폐사수 조회 -->
+	<select id="dongDeathCntSelectI" parameterType="java.util.Map" resultType="RecordIlji_Dto">
+		SELECT RECORDILJI_SEQ, PASSCODE, ILLYUNG, DEATHCOUNT, DISTINCTDONG FROM RECORDILJI 
+		WHERE DEATHCOUNT IS NOT NULL
+		AND DELFLAG = 'N'
+		AND PASSCODE=#{passcode} AND ILLYUNG=#{illyung}
+		ORDER BY DISTINCTDONG
+	</select>
+	
+	<!-- 일지입력: 동별 폐사수 조회 -->
+	<select id="dongDeathCntSelectD" parameterType="java.util.Map" resultType="RecordIlji_Dto">
+		SELECT RECORDILJI_SEQ, PASSCODE, ILLYUNG, DEATHCOUNT, DISTINCTDONG FROM RECORDILJI 
+		WHERE DEATHCOUNT IS NOT NULL
+		AND DELFLAG = 'N'
+		AND PASSCODE=#{passcode} AND ILLYUNG=#{illyung} AND DISTINCTDONG=#{distinctdong}
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	<!-- 일지입력: 동별 중량 입력 -->
+	<insert id="dongWeightInput" parameterType="RecordIlji_Dto">
+		INSERT INTO RECORDILJI (RECORDILJI_SEQ, PASSCODE, ILLYUNG, HIGHTEMP, LOWTEMP, RECORDDATE, RECORDTIME, WEIGHT,
+		DISTINCTDONG, DELFLAG)
+		VALUES('ILJI'||ILJI_SEQ.NEXTVAL,
+		#{passcode}, #{illyung}, #{hightemp}, #{lowtemp}, SYSDATE, SYSDATE, #{weight}, #{distinctdong}, 'N' )
+	</insert>
+	
+	<!-- 일지입력: 동별 중량 수정 -->
+	<update id="dongWeightModify" parameterType="RecordIlji_Dto">
+		UPDATE RECORDILJI SET RECORDDATE=SYSDATE, RECORDTIME=SYSDATE, WEIGHT=#{weight}
+		WHERE RECORDILJI_SEQ=#{recordilji_seq} AND PASSCODE=#{passcode} AND ILLYUNG=#{illyung} AND DISTINCTDONG=#{distinctdong}
+	</update>
+	
+	<!-- 일지입력: 동별 중량 삭제 -->
+	<update id="dongWeightDel" parameterType="RecordIlji_Dto">
+		UPDATE RECORDILJI SET DELFLAG='Y'
+		WHERE RECORDILJI_SEQ=#{recordilji_seq} AND PASSCODE=#{passcode} AND ILLYUNG=#{illyung} AND DISTINCTDONG=#{distinctdong}
+	</update>
+	
+	<!-- 일지입력: 일령별 중량 조회 -->
+	<select id="dongWeightSelectI" parameterType="java.util.Map" resultType="RecordIlji_Dto">
+		SELECT RECORDILJI_SEQ, PASSCODE, ILLYUNG, WEIGHT, DISTINCTDONG FROM RECORDILJI 
+		WHERE WEIGHT IS NOT NULL
+		AND DELFLAG = 'N'
+		AND PASSCODE=#{passcode} AND ILLYUNG=#{illyung}
+		ORDER BY DISTINCTDONG
+	</select>
+	
+	<!-- 일지입력: 동별 중량 조회 -->
+	<select id="dongWeightSelectD" parameterType="java.util.Map" resultType="RecordIlji_Dto">
+		SELECT RECORDILJI_SEQ, PASSCODE, ILLYUNG, WEIGHT, DISTINCTDONG FROM RECORDILJI 
+		WHERE WEIGHT IS NOT NULL
+		AND DELFLAG = 'N'
+		AND PASSCODE=#{passcode} AND ILLYUNG=#{illyung} AND DISTINCTDONG=#{distinctdong}
+	</select>
+	
+	
+	
+	
+	
+	<!-- 일지입력: 날씨상태 입력 -->
+	<insert id="dongWeatherComentInput" parameterType="RecordIlji_Dto">
+		INSERT INTO RECORDILJI (RECORDILJI_SEQ, PASSCODE, ILLYUNG, HIGHTEMP, LOWTEMP, RECORDDATE, RECORDTIME, WEATHERCON, 
+		DISTINCTDONG, DELFLAG) 
+		VALUES('ILJI'||ILJI_SEQ.NEXTVAL,
+		#{passcode}, #{illyung}, #{hightemp}, #{lowtemp},  SYSDATE, SYSDATE, #{weathercon},
+		#{distinctdong},'N')		
+	</insert>
+	
+	<!-- 일지입력: 날씨상태 수정 -->
+	<update id="dongWeatherComentModify" parameterType="RecordIlji_Dto">
+		UPDATE RECORDILJI SET RECORDDATE=SYSDATE, RECORDTIME=SYSDATE, WEATHERCON=#{weathercon}, DISTINCTDONG=#{distinctdong}
+		WHERE RECORDILJI_SEQ=#{recordilji_seq} AND PASSCODE=#{passcode} AND ILLYUNG=#{illyung}	
+	</update>
+	
+	<!-- 일지입력: 날씨상태 삭제 -->
+	<update id="dongWeatherComentDel" parameterType="RecordIlji_Dto">
+		UPDATE RECORDILJI SET DELFLAG='Y'  
+		WHERE RECORDILJI_SEQ=#{recordilji_seq} AND PASSCODE=#{passcode} AND ILLYUNG=#{illyung}
+	</update>
+	
+	
+	
+	<!-- 일지입력: 비고 입력 -->
+	<insert id="dongEtcComentInput" parameterType="RecordIlji_Dto">
+		INSERT INTO RECORDILJI (RECORDILJI_SEQ, PASSCODE, ILLYUNG, HIGHTEMP, LOWTEMP, RECORDDATE, RECORDTIME, ETC, 
+		DISTINCTDONG, DELFLAG) 
+		VALUES('ILJI'||ILJI_SEQ.NEXTVAL,#{passcode}, #{illyung}, #{hightemp}, #{lowtemp}, SYSDATE, SYSDATE, #{etc},
+		#{distinctdong},'N')
+		
+	</insert>
+	
+	<!-- 일지입력: 비고 수정 -->
+	<update id="dongEtcComentModify" parameterType="RecordIlji_Dto">
+		UPDATE RECORDILJI SET RECORDDATE=SYSDATE, RECORDTIME=SYSDATE, ETC=#{etc}
+		WHERE RECORDILJI_SEQ=#{recordilji_seq} AND PASSCODE=#{passcode}
+	</update>
+	
+	<!-- 일지입력: 비고 삭제 -->
+	<update id="dongEtcComentDel" parameterType="RecordIlji_Dto">
+		UPDATE RECORDILJI SET DELFLAG='Y'  
+		WHERE RECORDILJI_SEQ=#{recordilji_seq} AND PASSCODE=#{passcode} AND ILLYUNG=#{illyung}
+	</update>
+	
+	
+	<!-- 일지입력시 작성 확인용 조회 -->
+	<select id="illyungSelectAll" parameterType="java.util.Map" resultType="RecordIlji_Dto">
+		SELECT DEATHCOUNT, WEIGHT, BUILDTEMP, MEDICINE,  ETC, WEATHERCON,  DISTINCTDONG
+		FROM RECORDILJI 
+		WHERE DELFLAG = 'N'
+		AND PASSCODE=#{passcode} AND ILLYUNG=#{illyung}
+		ORDER BY RECORDTIME DESC
+	</select>
+
+</mapper>

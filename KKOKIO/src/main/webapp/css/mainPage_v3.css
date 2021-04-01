@@ -1,0 +1,392 @@
+@charset "UTF-8";
+
+body{
+   margin: 0px;
+   padding: 0px;
+   background: #FEFDFF;
+   font-family: 'Noto Sans KR', sans-serif;
+}
+
+/* 폰트 */
+
+	p{
+		font-size: 20px;
+	}
+	
+
+/* 앵커 */	
+	a{
+	text-decoration: none;
+	color: black;
+	}
+	
+/* 틀*/
+	#container {
+		width: 1200px;
+		height: 700px;
+		border: 1px solid black;
+	}
+	
+	#homeDiv{
+      width: 1200px;
+      height: 40px;
+      font-weight: bold;
+      font-size: large;
+      border: 1px solid black;
+      padding: 10px 0px 10px 30px; 
+      font-family: 'Nanum Gothic', sans-serif;
+   }
+   
+   #colorDiv{
+      width: 1200px;
+      height: 60px;
+      background-color: #343436;
+      text-align: right;
+      cursor: default;
+   }
+   
+   #welcomeID{
+      padding-top: 30px;
+      margin-right: 20px;
+      color: #ffffff;
+      font-weight: bold;
+      font-size: 18px;
+   }
+	
+   #topDiv{
+      width: 1200px;
+      height: 140px;
+      border: 1px solid pink;
+   }
+	
+	#leftDiv{
+		width: 240px;
+		height: 560px;
+		border: 1px solid black;
+		float: left;
+	}
+	
+	#middleDiv{
+		display: inline-block;
+		margin: 0 auto;
+		width:	740px;
+		height: 560px;
+		border: 1px solid black; 
+	}
+	
+	#rightDiv {
+		float: right;
+		width: 212px;
+		height: 560px;
+		left: 1116px;
+		padding: 10px;
+/* 		border: 1px solid black; */
+	}
+	
+	
+
+/*탑 메뉴*/
+   
+	#topMenu{
+		text-align: right;
+		font-size: 18px;
+	}
+	
+	
+	#topMenu div{
+		display: inline-block;
+		margin-right: 10px;
+	}
+	
+	#topMenu a{
+		cursor: pointer;
+	}
+
+
+/* 왼쪽 사이드 메뉴 */
+#farmInfo{
+      width:  220px;
+      height: 95px;
+      text-align: center;
+      border: 1px solid #DEDEDE;
+      margin-bottom: 5px;
+}
+
+#farmInfo p{
+	cursor: default;
+	margin-bottom: 3px;
+	font-weight: bold;
+}
+
+#mainPasscode{
+	font-size: 14px;
+}
+
+#chnagePassBtn{
+	font-size: 14px;
+}
+
+.container_accordion {
+  width:  220px;
+  margin: 10px;
+}
+
+div[class*='col-'] {
+  padding: 0 30px;
+}
+
+.wrap {
+  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+  border-radius: 4px;
+}
+
+a:focus,
+a:hover,
+a:active {
+  outline: 0;
+  text-decoration: none;
+}
+
+.panel {
+  border-width: 0 0 1px 0;
+  border-style: solid;
+  border-color: #fff;
+  background: none;
+  box-shadow: none;
+}
+
+.panel:last-child {
+  border-bottom: none;
+}
+
+.panel-group > .panel:first-child .panel-heading {
+  border-radius: 4px 4px 0 0;
+}
+
+.panel-group .panel {
+  border-radius: 0;
+}
+
+.panel-group .panel + .panel {
+  margin-top: 0;
+}
+
+.panel-heading {
+  background-color: #FFFFFF;
+  border-radius: 0;
+  border: 1px solid #DEDEDE;
+  color: #999999;
+  padding: 0;
+}
+
+.panel-title a {
+  display: block;
+  color: #999999;
+  padding: 15px;
+  position: relative;
+  font-size: 16px;
+  font-weight: 400;
+}
+.panel-title a:hover {
+  font-weight : bold;
+  color: #373737;
+}
+
+.panel-body {
+  background: #FFFFFF;
+  color: #999999;
+  border: 1px solid #DEDEDE;
+}
+.panel-body p a{
+  color: #999999;
+}
+.panel-body p a:hover{
+  color: #373737;
+  border-bottom: 1.2px solid #373737;
+}
+
+.panel:last-child .panel-body {
+  border-radius: 0 0 4px 4px;
+}
+
+.panel:last-child .panel-heading {
+  border-radius: 0 0 4px 4px;
+  transition: border-radius 0.3s linear 0.2s;
+}
+
+.panel:last-child .panel-heading.active {
+  border-radius: 0;
+  transition: border-radius linear 0s;
+}
+/* #bs-collapse icon scale option */
+
+.panel-heading a:before {
+  content: '\e146';
+  position: absolute;
+  font-family: 'Material Icons';
+  right: 5px;
+  top: 10px;
+  font-size: 24px;
+  transition: all 0.5s;
+  -webkit-transform: scale(1);
+          transform: scale(1);
+}
+
+.panel-heading.active a:before {
+  content: ' ';
+  transition: all 0.5s;
+  -webkit-transform: scale(0);
+          transform: scale(0);
+}
+
+#bs-collapse .panel-heading a:after {
+  content: ' ';
+  font-size: 24px;
+  position: absolute;
+  font-family: 'Material Icons';
+  right: 5px;
+  top: 10px;
+  -webkit-transform: scale(0);
+          transform: scale(0);
+  transition: all 0.5s;
+}
+
+#bs-collapse .panel-heading.active a:after {
+  content: '\e909';
+  -webkit-transform: scale(1);
+          transform: scale(1);
+  transition: all 0.5s;
+}
+/* #accordion rotate icon option */
+
+#accordion .panel-heading a:before {
+  content: '\e316';
+  font-size: 24px;
+  position: absolute;
+  font-family: 'Material Icons';
+  right: 5px;
+  top: 10px;
+  -webkit-transform: rotate(180deg);
+          transform: rotate(180deg);
+  transition: all 0.5s;
+}
+
+#accordion .panel-heading.active a:before {
+  -webkit-transform: rotate(0deg);
+          transform: rotate(0deg);
+  transition: all 0.5s;
+}
+
+.panel-body{
+	padding: 0px;
+	padding-left: 10px;
+	margin: 0px;
+	font-size: 16px;
+}
+
+.panel-body a{
+	font-size: 16px;
+}
+
+.active{
+	color: black;
+}
+
+.activeTitle{
+	color: black;
+}
+
+/*오른쪽 메뉴*/
+	/* 달력 */
+   #datepicker{
+      width: 190px;
+      margin-top: 30px;
+   }
+   
+   .ui-datepicker{ font-size: 12px; width: 100%; }
+   .ui-datepicker select.ui-datepicker-month{ width:100%; font-size: 11px; }
+   .ui-datepicker select.ui-datepicker-year{ width:100%; font-size: 11px; }
+   
+   .ui-state-default{
+   	  font-size: 11px;
+   }
+   
+	/*엑셀 버튼*/
+	#excelBtn {
+      width: 190px;
+      height: 70px;
+      position: absolute;
+      top: 550px;
+      background-color: #ff7473;
+/*       border: none; */
+      border-radius: 10px;
+      text-align: center;
+      font-size: medium;
+      font-weight: bold;
+/*       cursor: pointer; */
+	}
+   
+   
+   /* 날씨 정보*/
+   #weatherInfo{
+   	width: 190px;
+   	height: 140px;
+   	border: 1px solid black;
+   }
+   
+   #weatherTitle{
+	border: 1px solid blue;
+	height: 20px;
+	}
+	
+	#WeatherBtn{
+		height: 18px;
+		font-size: 8px;
+	}
+	
+	#weatherLeft{
+	width: 100px;
+	height: 120px;
+	border: 1px solid orange;
+	}
+	
+	#weatherRight{
+	width: 90px;
+	height: 120px;
+	border: 1px solid red;
+	float: right;
+	}
+	
+	#temp{
+	width: 77px;
+    height: 70px;
+    border: 1px solid red;
+    margin: 0px auto;
+	font-size: 58px;
+	text-align: center;
+	}
+	
+	#weatherImgDiv{
+	width: 77px;
+    height: 70px;
+    border: 1px solid red;
+    margin: 0px auto;
+	}
+	
+	#celsius{
+	font-size: 20px;
+	}
+
+	.littleCelsius{
+	font-size: 8px;
+	}
+   
+/*가운데 부분*/
+	#title{
+		width: 740px;
+		height: 70px;
+		padding: 15px 20px;
+		font-size: 20px;
+		
+		border: 1px solid green;
+	}

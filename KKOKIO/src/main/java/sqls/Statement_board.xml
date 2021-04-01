@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.next.kko.board">
+<!-- 	공지사항  글 등록 -->	
+	<insert id="insertBoard" parameterType="Noticeboard_Dto">
+		INSERT INTO NOTICEBOARD
+		(NOTICECODE_SEQ, WRITER, TITLE, CONTENT, REGDATE, VIEWCOUNT, DELFLAG)
+		VALUES('NOTICE'||NOTICECODE_SEQ.NEXTVAL, #{writer}, #{title}, #{content}, SYSDATE , 0, 'N' )
+	</insert>
+<!-- 공지사항 관리자조회 -->
+	<select id="getAdminboard" resultType="Noticeboard_Dto">
+	SELECT NOTICECODE_SEQ, WRITER, TITLE, CONTENT, REGDATE, VIEWCOUNT, DELFLAG
+		FROM NOTICEBOARD
+		ORDER BY REGDATE DESC
+	</select>
+<!-- 	공지사항 전체조회 -->
+	<select id="getAllboard" resultType="Noticeboard_Dto">
+		SELECT NOTICECODE_SEQ, WRITER, TITLE, CONTENT, REGDATE, VIEWCOUNT
+		FROM NOTICEBOARD
+		WHERE DELFLAG='N'
+		ORDER BY REGDATE DESC
+	</select>
+<!-- 	공지사항 상세조회 -->	
+	<select id="getOneBoard" parameterType="java.lang.String"
+	resultType="Noticeboard_Dto">
+		SELECT NOTICECODE_SEQ, WRITER, TITLE, CONTENT, REGDATE, VIEWCOUNT
+		FROM NOTICEBOARD
+		WHERE NOTICECODE_SEQ=#{noticecode_seq} AND DELFLAG='N'
+		ORDER BY REGDATE DESC
+	</select>
+<!-- 	공지사항 글 삭제 -->		
+	<update id="deleteOneBoard" parameterType="java.lang.String">
+		UPDATE NOTICEBOARD SET DELFLAG = 'Y' WHERE NOTICECODE_SEQ=#{seq}
+	</update>
+<!-- 	공지사항 수정 -->		
+	<update id="modifyBoard" parameterType="Noticeboard_Dto">
+		UPDATE NOTICEBOARD
+		SET TITLE=#{title}, CONTENT=#{content}, REGDATE=SYSDATE
+		WHERE NOTICECODE_SEQ=#{noticecode_seq}
+	</update>
+</mapper>
+

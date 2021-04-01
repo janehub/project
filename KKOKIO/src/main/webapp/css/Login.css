@@ -1,0 +1,159 @@
+@charset "UTF-8";
+
+
+/* html{
+	width: 1200px;
+	height: 700px;
+} */
+
+body{
+/* 	background:url('../images/baegyung.jpeg') no-repeat 15% 40%; */
+	background:url('../images/bg4.jpg') no-repeat;
+    background-size: 100%;
+    text-align: center;
+    font-family: Georgia, "Times New Roman", serif;
+/* 	font-family: 'Open Sans', sans-serif; */
+}
+/*--footer--*/
+.footer {
+    position:fixed;
+    bottom:0;
+    width:100%;
+    height:70px; 
+	font-family: 'Nanum Gothic', sans-serif;
+    font-weight: bold;
+    font-size: large;
+}
+.footer p {
+    font-size: .7em;
+    color: white;
+}
+.footer p a {
+    color: #d20962;
+}
+.footer p a:hover {
+   text-decoration:underline;
+}
+/*--//footer--*/
+
+::-webkit-input-placeholder{
+	color:orange;
+}
+
+#container{
+	position: relative;
+	margin: auto;
+	top: 160px;
+/* 	border: 3px solid gray; */
+	width: 400px;
+	height: 170px;
+	padding: 90px;
+	padding-top:0px;
+	margin-top: -100px;
+}
+
+#title{
+	font-family: 'Open Sans', sans-serif;
+/* 	font-family: Georgia, "Times New Roman", serif; */
+	margin: 120px 0px 0px -50px;
+	padding-left: 80px;
+	font-size: 25px;
+	text-align: center; 
+/* 	font-weight: bold; */
+	color: #FFFFF0;
+}
+
+#id {
+	margin-left: 65px;
+	font-weight: bold;
+	float: left;
+	margin-right: 5px;
+}
+
+#pw{
+	margin-left: 50px;
+	font-weight: bold;
+	float: left;
+	margin-right: 5px;
+}
+
+#login {
+	position: relative;
+	margin: 10px;
+	border: 1.4px solid white;
+	color: #ECEBEA;
+	background-color: rgba( 255, 255, 255, 0.5 );
+	width: 100px;
+	height: 40px;
+	font-weight: bold;
+	border-radius: 50px;
+	opacity: .8;
+	cursor: pointer;
+}
+
+/* #SignUp, #SearchId, #SearchPw {
+	width: 100px;
+	font-size: 13px;
+} */
+
+#bottom {
+	position: relative;
+	left: 60px;
+}
+
+#SignUp {
+	width: 100px;
+	background-color: rgba( 255, 255, 255, 0.5 );
+	color: #ECEBEA;
+	border: 1.4px solid white;
+	margin-left: -120px;
+	border-radius: 50px;
+	text-align: center;
+	cursor: pointer;
+}
+
+#SearchId, #SearchPw {
+	background-color: rgba( 255, 255, 255, 0.5 );
+	color: #ECEBEA;
+	border: 1.4px solid white;
+	margin-left: -5px;
+	width: 100px;
+	border-radius: 50px;
+	text-align: center;
+	cursor: pointer;
+}
+
+a {
+	text-decoration: none;
+}
+input#inputId{
+	border: none;
+	background: none;
+	opacity: .6;
+	color : white;
+}
+input#inputPw{
+	border: none;
+	background: none;
+	opacity: .6;
+	color : white;
+}
+hr{
+	width : 250px;
+	color: #EEEEEE;
+	border :1.3px solid #EEEEEE;
+}
+::placeholder{
+	color: #b0b0b0;
+	opacity: 1;
+}
+input{
+outline-style:none;
+box-shadow:none;
+border-color:transparent;
+}
+input:hover{
+	color:#fff;
+	border:1px solid #f40;
+	background-color:#f40;
+}

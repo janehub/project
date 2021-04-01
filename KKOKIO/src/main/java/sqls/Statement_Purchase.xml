@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.next.kko.purchase">
+
+	<resultMap type="Product_Dto" id="productdto">
+		<result property="productcode" column="PRODUCTCODE"/>
+		<result property="pname"	   column="PNAME"/>
+		<result property="pprice" 	   column="PPRICE"/>
+		<result property="pdetail" 	   column="PDETAIL"/>
+		<result property="delflag" 	   column="DELFLAG"/>
+		
+		<collection property="purchase_Dto" resultMap="purchasedto"/>
+	</resultMap>
+	
+	<resultMap type="Purchase_Dto" id="purchasedto">
+		<result property="purchasecode"  column="PURCHASECODE"/>
+		<result property="illyung"		 column="ILLYUNG"/>
+		<result property="passcode"		 column="PASSCODE"/>
+		<result property="productcode" 	 column="PRODUCTCODE"/>
+		<result property="productin" 	 column="PRODUCTIN"/>
+		<result property="productnum" 	 column="PRODUCTNUM"/>
+		<result property="etc" 			 column="ETC"/>
+		<result property="delflag" 		 column="DELFLAG"/>
+	</resultMap>
+	
+	
+	
+
+	<insert id="purchanseInfInput" parameterType="Purchase_Dto">
+		INSERT INTO PURCHASE (PURCHASECODE, PASSCODE, ILLYUNG, PRODUCTCODE, PRODUCTIN, PRODUCTNUM, ETC, DELFLAG) 
+		VALUES('PUR'||PURCHASE_SEQ.NEXTVAL,	#{passcode}, #{illyung}, #{productcode}, TO_DATE(#{productin},'YYYY-mm-DD'), #{productnum}, #{etc}, 'N' )
+	</insert>
+	
+	<update id="purchanseInfModify" parameterType="Purchase_Dto">
+		UPDATE PURCHASE SET PRODUCTCODE=#{productcode}, ILLYUNG=#{illyung},PRODUCTIN=#{productin}, PRODUCTNUM=#{productnum}, ETC=#{etc}
+		WHERE PURCHASECODE=#{purchasecode}
+	</update>
+	
+	<update id="purchanseInfDel" parameterType="java.lang.String">
+		UPDATE PURCHASE SET DELFLAG='Y'  WHERE PURCHASECODE=#{purchasecode}
+	</update>
+	
+	<select id="purchanseInfSelectAll" resultType="java.util.Map">
+		SELECT PURCHASECODE, ILLYUNG, TO_CHAR(PRODUCTIN, 'YYYY-mm-DD') AS PRODUCTIN, PASSCODE, PRODUCTCODE, PNAME, PRODUCTNUM, ETC 
+		FROM PURCHASE JOIN PRODUCT
+		USING(PRODUCTCODE)
+		WHERE PASSCODE = #{passcode}
+		AND PURCHASE.DELFLAG='N'
+		ORDER BY PASSCODE, ILLYUNG
+	</select>
+	
+	<select id="purchanseInfSelectOne" parameterType="java.util.Map" resultMap="productdto">
+		SELECT PURCHASECODE, ILLYUNG, PRODUCTIN, PASSCODE, PRODUCTCODE, PNAME, PRODUCTNUM, ETC 
+		FROM PURCHASE JOIN PRODUCT
+		USING(PRODUCTCODE)
+		WHERE PURCHASECODE=#{purchasecode} 
+		AND PASSCODE = #{passcode}
+		AND PURCHASE.DELFLAG='N'
+		ORDER BY PASSCODE, ILLYUNG
+	</select>
+	
+
+</mapper>
+

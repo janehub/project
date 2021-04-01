@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.next.kko.search">
+
+<!-- 일지 키워드  검색 -->
+<select id="searchIlji" parameterType="java.util.Map" resultType="RecordIlji_Dto">
+SELECT RECORDILJI_SEQ, PASSCODE, ILLYUNG, HIGHTEMP, LOWTEMP, RECORDDATE, RECORDTIME, MEDICINE, WEATHERCON, ETC, DEATHCOUNT, WEIGHT, BUILDTEMP, DISTINCTDONG
+FROM RECORDILJI
+WHERE PASSCODE LIKE #{idpassYM}||'%'
+<if test='isAll.equals("N")'>
+	AND ILLYUNG= #{illyung}
+</if>
+AND
+<foreach collection="dong" item="eachdong" index="index" open="(" close=")" separator="or">
+	DISTINCTDONG LIKE '%'||#{eachdong}||'%'
+</foreach>
+AND DELFLAG='N'
+</select>
+
+<!-- 파스코드별 일지조회 -->
+<select id="getAllIlji" parameterType="java.lang.String" resultType="RecordIlji_Dto">
+	SELECT RECORDILJI_SEQ, PASSCODE, ILLYUNG, HIGHTEMP, LOWTEMP, RECORDDATE, RECORDTIME, MEDICINE, WEATHERCON, ETC, DEATHCOUNT, WEIGHT, BUILDTEMP, DISTINCTDONG
+	FROM RECORDILJI WHERE PASSCODE LIKE #{idpassym}||'%' AND DELFLAG='N'
+</select>
+</mapper>

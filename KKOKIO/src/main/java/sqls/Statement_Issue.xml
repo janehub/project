@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.next.kko.issue">
+<!--  이슈사항  글 등록 -->	
+	<insert id="insertIssue" parameterType="Issue_Dto">
+		INSERT INTO ISSUE
+		(ISSUECODE, RECORDILJI_SEQ, PASSCODE, ILLYUNG, CONTENTCODE, ACTIONDETAIL,ACTIONCODE, ISSUEDETAIL, ISSUEETC, ACTIONRESULT, DELFLAG)
+		VALUES('IS'||ISSUE_SEQ.NEXTVAL,#{recordilji_seq},#{passcode}, #{illyung}, 'IS'||ISSUE_SEQ.NEXTVAL,#{actiondetail},0 ,#{issuedetail},#{issueetc}, 'N' , 'N' )
+	</insert>
+	
+<!-- 	이슈사항 수정 -->
+	<update id="modifyIssue" parameterType="Issue_Dto">
+		UPDATE ISSUE
+		SET ISSUEDETAIL=#{issuedetail}, ISSUEETC=#{issueetc}, ACTIONDETAIL=#{actiondetail}, ACTIONRESULT=#{actionresult}
+		WHERE ISSUECODE=#{issuecode}
+	</update>
+
+<!-- 이슈사항 삭제 -->
+	<update id="deleteIssue" parameterType="java.lang.String">
+		UPDATE ISSUE
+		SET DELFLAG='Y'
+		WHERE CONTENTCODE=#{contentcode}
+	</update>
+
+<!-- 조치사항 등록 - 이전 글 update-->
+
+	<update id="InsertActionU" parameterType="java.lang.String">
+		UPDATE ISSUE
+		SET ACTIONCODE = ACTIONCODE+1
+		WHERE ISSUECODE IN (SELECT ISSUECODE FROM ISSUE
+		WHERE CONTENTCODE=#{contentcode} AND ACTIONCODE>0)
+	</update>
+	
+<!-- 조치사항 등록  -실제 등록 insert-->	
+	<insert id="InsertActionI" parameterType="Issue_Dto">
+		INSERT INTO ISSUE
+		(ISSUECODE, RECORDILJI_SEQ, PASSCODE, ILLYUNG, CONTENTCODE, ACTIONCODE, ACTIONDETAIL, ISSUEETC, ACTIONRESULT, DELFLAG)
+		VALUES('IS'||ISSUE_SEQ.NEXTVAL,#{recordilji_seq},#{passcode}, #{illyung}, #{contentcode},
+		1,#{actiondetail},#{issueetc}, 'N' , 'N' )
+	</insert>
+
+<!-- 조치사항 수정 -->
+	<update id="modifyAction" parameterType="Issue_Dto">
+		UPDATE ISSUE
+		SET ACTIONDETAIL=#{actiondetail}, ISSUEETC=#{issueetc}
+		WHERE ISSUECODE=#{issuecode}
+	</update>
+
+<!-- 조치사항 삭제 -->
+	<update id="deleteAction" parameterType="java.lang.String">
+		UPDATE ISSUE
+		SET DELFLAG='Y'
+		WHERE ISSUECODE=#{issuecode}
+	</update>
+	
+<!-- 이슈사항/조치사항 결과 수정 -->
+	<update id="modifyActionResult" parameterType="java.lang.String">
+		UPDATE ISSUE
+		SET ACTIONRESULT='Y' 
+		WHERE CONTENTCODE=#{contentcode}
+	</update>
+	
+<!-- 이슈사항 / 조치사항 전체조회 -->
+	<select id="getAllissue" parameterType="java.lang.String" resultType="Issue_Dto">
+		SELECT ISSUECODE, RECORDILJI_SEQ, PASSCODE, ILLYUNG, CONTENTCODE, ACTIONCODE, ISSUEDETAIL, ACTIONDETAIL, ISSUEETC, ACTIONRESULT
+		FROM ISSUE
+		WHERE PASSCODE=#{passcode} AND DELFLAG='N' 
+		ORDER BY ISSUECODE DESC
+	</select>
+<!-- 이슈사항 /조치사항 상세조회 -->
+	<select id="getOneIssue" resultType="Issue_Dto">
+		SELECT ISSUECODE, RECORDILJI_SEQ, PASSCODE, ILLYUNG, CONTENTCODE, ACTIONCODE, ISSUEDETAIL, ACTIONDETAIL, ISSUEETC, ACTIONRESULT
+		FROM ISSUE
+		WHERE ISSUECODE=#{issuecode} AND DELFLAG='N'
+		ORDER BY ISSUECODE DESC
+	</select>
+</mapper>
+

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd" >
+<configuration>
+<typeAliases>
+<!-- 	<typeAlias type="" alias=""/> -->
+	<typeAlias type="com.next.kko.dtos.AccountDto" alias="Account_Dto"/>
+	<typeAlias type="com.next.kko.dtos.IssueDto" alias="Issue_Dto"/>
+	<typeAlias type="com.next.kko.dtos.NoticeBoardDto" alias="Noticeboard_Dto"/>
+	<typeAlias type="com.next.kko.dtos.PassDto" alias="Pass_Dto"/>
+	<typeAlias type="com.next.kko.dtos.ProductDto" alias="Product_Dto"/>
+	<typeAlias type="com.next.kko.dtos.PurchaseDto" alias="Purchase_Dto"/>
+	<typeAlias type="com.next.kko.dtos.RecordIljiDto" alias="RecordIlji_Dto"/>
+</typeAliases>
+
+<mappers>
+	<mapper resource="/sqls/Statement_Account.xml"/>
+	<mapper resource="/sqls/Statement_board.xml"/>
+	<mapper resource="/sqls/Statement_Excel.xml"/>
+	<mapper resource="/sqls/Statement_Ilji.xml"/>
+	<mapper resource="/sqls/Statement_Issue.xml"/>
+	<mapper resource="/sqls/Statement_Product.xml"/>
+	<mapper resource="/sqls/Statement_Purchase.xml"/>
+	<mapper resource="/sqls/Statement_Static.xml"/>
+	<mapper resource="/sqls/Statement_AddressCode.xml"/>
+	<mapper resource="/sqls/Statement_Search.xml"/>
+</mappers>            
+
+</configuration>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+<!-- 로그를 자동으로 처리 하기 위한 AOP  Method들-->
+<bean name="logAop" class="com.next.kko.aop.LogExcute"/>
+
+<!-- advice를 설정 -->
+<aop:config>
+	<aop:pointcut id="serviceLogPoint" 
+	expression="execution(public * prj.lab.gp.model.*Dao*.*(..))" />
+	<aop:aspect id="logAop" ref="logAop">
+		<aop:before method="before" pointcut-ref="serviceLogPoint"/>
+		<aop:after-returning method="afterReturning" pointcut-ref="serviceLogPoint"/>
+		<aop:after-throwing method="daoError" pointcut-ref="serviceLogPoint"/>
+	</aop:aspect>
+</aop:config>
+
+<tx:annotation-driven transaction-manager="transactionManager"/>
+</beans>
+
+
+
+
+

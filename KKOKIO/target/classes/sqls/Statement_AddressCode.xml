@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.next.kko.addresscode">
+
+<!-- 회원가입시 -->
+<insert id="insertAddressCode" parameterType="java.util.Map">
+INSERT INTO ADDRESSCODE
+(ID, ADDRESSCODE, DELFLAG)
+VALUES(#{id}, #{addresscode}, 'N')
+</insert>
+
+<!-- 날씨정보를 위한 주소코드 설정 -->
+<update id="updateAddressCode" parameterType="java.util.Map">
+UPDATE ADDRESSCODE
+SET ADDRESSCODE=#{addresscode}
+WHERE ID=#{id}
+</update>
+
+<!-- 로그인시 -->
+<select id="getAddressCode" parameterType="java.lang.String" resultType="java.lang.String">
+SELECT ADDRESSCODE
+FROM ADDRESSCODE
+WHERE ID=#{id} AND DELFLAG='N'
+</select>
+
+</mapper>

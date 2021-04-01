@@ -1,0 +1,7 @@
+@charset "UTF-8";
+#makePassBox{
+	margin: 50px auto;
+	width: 500px;
+	height: 500px;
+	border: 1px solid red;
+}

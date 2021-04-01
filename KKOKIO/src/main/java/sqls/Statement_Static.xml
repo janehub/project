@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.next.kko.static">
+
+	<select id="dongChickNumAll" parameterType="java.lang.String" resultType="Pass_Dto">
+		SELECT DONGCHICKNUM FROM PASS WHERE PASSCODE=#{passcode}
+	</select>
+
+	<select id="dongDeathCntAll" parameterType="java.util.Map" resultType="RecordIlji_Dto">
+		SELECT ILLYUNG, DEATHCOUNT FROM RECORDILJI 
+		WHERE PASSCODE=#{passcode}
+		AND DEATHCOUNT IS NOT NULL
+		AND DISTINCTDONG = #{distinctdong}
+		ORDER BY ILLYUNG
+	</select>
+
+<!-- 파스별 폐사수 통계 -->
+	<select id="getDeathCountStatic" parameterType="java.lang.String" resultType="RecordIlji_Dto">
+		SELECT ILLYUNG, NVL(DISTINCTDONG,'동합계') AS DISTINCTDONG, SUM(DEATHCOUNT) AS DEATHCOUNT
+		FROM RECORDILJI
+		WHERE PASSCODE=#{passcode} AND DELFLAG='N' AND DEATHCOUNT>0
+		GROUP BY ROLLUP(ILLYUNG,DISTINCTDONG)
+		ORDER BY ILLYUNG,DISTINCTDONG
+	</select>
+
+</mapper>
+
+
+

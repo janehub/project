@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+
+<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	<property name="locations">
+		<list>
+			<value>classpath:properties/db.properties</value>
+		</list>
+	</property>	
+</bean>
+
+<!-- datasource 설정 파일 commons-dbcp 파일 필요 -->
+<bean class="org.apache.commons.dbcp.BasicDataSource" id="dataSource">
+	<property name="driverClassName" value="${driver}"/>	
+	<property name="url" value="${url}"/>
+	<property name="username" value="${username}"/>
+	<property name="password" value="${password}"/>
+	<property name="defaultAutoCommit" value="true" />
+</bean>
+
+<!-- Mybatis 객체인 SqlSessionFactory 객체를 Spring -->
+	<bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="configLocation" value="/WEB-INF/spring/sqlMap/sqlMapConfig.xml"/>
+	</bean>
+	
+	<!-- 생성된 mybatis 객체를 Spring에서 사용할 수 있도록 bean 등록 -->
+	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactoryBean" />	
+	</bean>
+	
+	<!-- transaction 사용을 위한 Spring Bean 설정 -->
+	<!-- transaction 처리 방법은 1.@transactional 2. AOP -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
+	
+	<!-- AOP를 이용하여 자동으로 Transaction(Rollback)이 실행 되도록 함 -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="*" propagation="REQUIRED" rollback-for="Exception"/>
+		</tx:attributes>
+	</tx:advice>
+	
+	<!-- aop를 이용해서 transation이 발생되는 상황 연결 -->
+	<aop:config>
+		<aop:advisor pointcut="execution(public * com.next.kko.model.*Service*.*(..))" 
+		 advice-ref="txAdvice"/>
+	</aop:config>
+	
+	
+	
+</beans>
+
+
+
+

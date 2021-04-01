@@ -1,0 +1,106 @@
+@charset "UTF-8";
+/* 폰트 */
+
+	p{
+		font-size: 20px;
+	}
+	
+	a{
+		font-size: 20px;
+	}
+
+/* 앵커 */	
+	a{
+	text-decoration: none;
+	color: black;
+	}
+	
+/* 틀*/
+	#container {
+		width: 1200px;
+		height: 700px;
+		border: 1px solid black;
+	}
+	
+	#topDiv{
+		width: 1200px;
+		height: 70px;
+		border: 1px solid pink;
+	}
+	
+	#leftDiv{
+		width: 240px;
+		height: 630px;
+		border: 1px solid black;
+		float: left;
+	}
+	
+	#middleDiv{
+		display: inline-block;
+		margin: 0 auto;
+		width:	740px;
+		height: 630px;
+		border: 1px solid black; 
+	}
+	
+	#rightDiv {
+		float: right;
+		width: 212px;
+		height: 630px;
+		left: 1116px;
+		border: 1px solid black;
+	}
+
+/*탑 메뉴*/
+	#topMenu{
+		text-align: right;
+	}
+	
+	#topMenu div{
+		display: inline-block;
+		margin-right: 10px;
+	}
+
+/* 왼쪽 사이드 메뉴 */
+	#accordion{
+		cursor: pointer;
+	}
+	#accordion h3{
+		width: 240px;
+		height: 35px;
+		margin: 0px;
+		border: 1px solid red;
+	}
+	
+	#accordion p{
+		margin: 0;
+	}
+
+	
+	/*엑셀 버튼*/		
+	.excelBtn {
+		width: 240px;
+		height: 70px;
+		position: absolute;
+		top: 540px;
+	}
+	
+	.excelBtn2 {
+		width: 240px;
+		height: 70px;
+		position: absolute;
+		top: 700px;
+	}
+		
+	#farmInfo{
+		width: 250px;
+		height: 100px;
+		text-align: center;
+	}
+	
+/*가운데 부분*/
+	#title{
+		width: 740px;
+		height: 70px;
+		border: 1px solid green;
+	}

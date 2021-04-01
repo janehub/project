@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.next.kko.product">
+
+
+	<insert id="goodsInfInput" parameterType="Product_Dto" >
+		<selectKey resultType="String" keyProperty="productcode"  order="BEFORE">
+		SELECT REPLACE(#{productcode} || TO_CHAR((NVL(MAX(SUBSTR(PRODUCTCODE,5)),0)+1),'0999'),' ','')  AS PRODUCTCODE
+			 FROM PRODUCT 
+			 WHERE PRODUCTCODE LIKE #{productcode}||'%'	
+		</selectKey>
+		INSERT INTO PRODUCT (PRODUCTCODE, PNAME, PPRICE, PDETAIL, DELFLAG)
+		VALUES( #{productcode}, #{pname}, #{pprice}, #{pdetail}, 'N' )
+	</insert>
+	
+	<update id="goodsInfModify" parameterType="Product_Dto">
+		UPDATE PRODUCT SET PNAME = #{pname}, PPRICE=#{pprice}, PDETAIL=#{pdetail}
+		 WHERE PRODUCTCODE = #{productcode}
+	</update>
+	
+	<update id="goodsInfDel" parameterType="java.lang.String">
+		UPDATE PRODUCT SET DELFLAG='Y' WHERE PRODUCTCODE= #{productcode}
+	</update>
+	
+	<select id="goodsInfSelectAll" resultType="Product_Dto">
+		SELECT PRODUCTCODE, PNAME, PPRICE, PDETAIL FROM PRODUCT 
+		WHERE DELFLAG='N'
+	</select>
+	
+	<select id="goodsInfSelectOne" parameterType="java.lang.String" resultType="Product_Dto">
+		SELECT PRODUCTCODE, PNAME, PPRICE, PDETAIL FROM PRODUCT  
+		WHERE PRODUCTCODE= #{productcode} AND DELFLAG='N'
+	</select>
+	
+
+
+</mapper>
+
